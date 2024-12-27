@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Story ❤️</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Add to existing <style> section -->
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --primary: #ff69b4;
+            --secondary: #ff1493;
+            --accent: #ff8cc6;
+            --dark: #1a1a1a;
+            --light: #ffffff;
+            --neon-pink: #ff6b97;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--dark);
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .cursor-trail {
+            width: 15px;
+            height: 15px;
+            background: var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        /* Initial Page */
+        #disc-page {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #2a0017, #000000);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease-in-out;
+        }
+             
+
+        .vinyl {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #333 0%, #000 30%, #333 31%, #000 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.3);
+            animation: spin 4s linear infinite;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .vinyl:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .click-text {
+            color: var(--light);
+            margin-top: 2em;
+            font-size: 1.5em;
+            opacity: 0;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        /* Question Page */
+        #question-page {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .floating-hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 1.5em;
+            color: rgba(255, 255, 255, 0.6);
+            animation: float 6s infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        .question-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 3em;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .question {
+            color: var(--light);
+            font-size: 2.5em;
+            margin-bottom: 1em;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .answer-input {
+            padding: 1em;
+            font-size: 1.2em;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: var(--light);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .answer-input:focus {
+            border-color: var(--light);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Success Page */
+        #success-page {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff1493, #ff69b4);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .success-text {
+            font-size: 3em;
+            color: var(--light);
+            font-family: 'Dancing Script', cursive;
+            text-align: center;
+            margin-bottom: 1em;
+        }
+
+        .question-text {
+            font-size: 2em;
+            color: var(--light);
+            margin: 1em 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .choices {
+            display: flex;
+            gap: 2em;
+            margin-top: 2em;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .choice-btn {
+            padding: 1em 2em;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .yes-btn {
+            background: var(--accent);
+            color: var(--light);
+        }
+
+        .no-btn {
+            background: #ff4466;
+            color: var(--light);
+            transition: all 0.2s ease;
+        }
+
+        /* Final Page */
+        #final-page {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff1493, #ff69b4);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .final-text {
+            font-size: 4em;
+            color: var(--neon-pink);
+            font-family: 'Dancing Script', cursive;
+            text-shadow: 0 0 10px var(--neon-pink),
+                         0 0 20px var(--neon-pink),
+                         0 0 30px var(--neon-pink);
+            animation: neon 1.5s infinite alternate;
+        }
+
+        @keyframes neon {
+            from { text-shadow: 0 0 10px var(--neon-pink),
+                               0 0 20px var(--neon-pink),
+                               0 0 30px var(--neon-pink); }
+            to { text-shadow: 0 0 5px var(--neon-pink),
+                             0 0 10px var(--neon-pink),
+                             0 0 15px var(--neon-pink); }
+        }
+
+        /* Rejection Page */
+        #rejection-page {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: all 3s ease-in-out;
+        }
+
+        .rejection-text {
+            font-size: 3em;
+            color: var(--light);
+            opacity: 1;
+            transition: opacity 3s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="cursor-trail"></div>
+
+    <!-- Initial Page -->
+    <div id="disc-page">
+        <div class="vinyl"></div>
+        <div class="click-text">Click the Record ❤️</div>
+    </div>
+
+    <!-- Question Page -->
+    <div id="question-page">
+        <div class="floating-hearts"></div>
+        <div class="question-container">
+            <h1 class="question">Bhavicka Loves _____?</h1>
+            <input type="text" class="answer-input" placeholder="Type your answer..." autocomplete="off">
+        </div>
+    </div>
+
+    <!-- Success Page -->
+    <div id="success-page">
+        <div class="success-text">I LOVE YOUU TOO BHAVICKAA!!❤️❤️</div>
+        <div class="question-text">Can we do the Frenchie on the very next date ??</div>
+        <div class="choices">
+            <button class="choice-btn yes-btn">YESSS</button>
+            <button class="choice-btn no-btn">NOO</button>
+        </div>
+    </div>
+
+    <!-- Final Page -->
+    <div id="final-page">
+        <div class="final-text">OKKIIEEEE ❤️❤️</div>
+    </div>
+
+    <!-- Rejection Page -->
+    <div id="rejection-page">
+        <div class="rejection-text">YOU DON'T LOVE ME 😔</div>
+    </div>
+
+    <audio id="bg-music" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2023/02/16/audio_d39003a4be.mp3?filename=romantic-piano-background-music-for-videos-5779.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Custom cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorTrail = document.querySelector('.cursor-trail');
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            setTimeout(() => {
+                cursorTrail.style.left = e.clientX + 'px';
+                cursorTrail.style.top = e.clientY + 'px';
+            }, 100);
+        });
+
+        // Create floating hearts
+        const heartsContainer = document.querySelector('.floating-hearts');
+        for(let i = 0; i < 20; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            heart.style.animationDelay = Math.random() * 5 + 's';
+            heartsContainer.appendChild(heart);
+        }
+
+        // Page transitions
+        const discPage = document.getElementById('disc-page');
+        const questionPage = document.getElementById('question-page');
+        const successPage = document.getElementById('success-page');
+        const finalPage = document.getElementById('final-page');
+        const rejectionPage = document.getElementById('rejection-page');
+        const bgMusic = document.getElementById('bg-music');
+
+        // Start music on first interaction
+        document.body.addEventListener('click', () => {
+            bgMusic.play();
+        }, { once: true });
+
+        // Disc click
+        document.querySelector('.vinyl').addEventListener('click', () => {
+            discPage.style.opacity = '0';
+            setTimeout(() => {
+                discPage.style.display = 'none';
+                questionPage.style.display = 'flex';
+                setTimeout(() => {
+                    questionPage.style.opacity = '1';
+                }, 100);
+            }, 1000);
+        });
+
+        // Answer input
+        document.querySelector('.answer-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const answer = e.target.value.trim().toLowerCase();
+                if (answer === 'vansh') {
+                    questionPage.style.opacity = '0';
+                    setTimeout(() => {
+                        questionPage.style.display = 'none';
+                        successPage.style.display = 'flex';
+                        setTimeout(() => {
+                            successPage.style.opacity = '1';
+                            setTimeout(() => {
+                                document.querySelector('.question-text').style.opacity = '1';
+                                document.querySelector('.choices').style.opacity = '1';
+                            }, 3000);
+                        }, 100);
+                    }, 1000);
+                } else {
+                    questionPage.style.opacity = '0';
+                    setTimeout(() => {
+                        questionPage.style.display = 'none';
+                        rejectionPage.style.display = 'flex';
+                        setTimeout(() => {
+                            rejectionPage.style.opacity = '1';
+                            setTimeout(() => {
+                                rejectionPage.style.background = '#000';
+                                document.querySelector('.rejection-text').style.opacity = '0';
+                            }, 3000);
+                        }, 100);
+                    }, 1000);
+                }
+            }
+        });
+
+        // No button hover effect
+        const noBtn = document.querySelector('.no-btn');
+        noBtn.addEventListener('mouseover', () => {
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        });
+
+        // Yes button click
+        document.querySelector('.yes-btn').addEventListener('click', () => {
+            successPage.style.opacity = '0';
+            setTimeout(() => {
+                successPage.style.display = 'none';
+                finalPage.style.display = 'flex';
+                setTimeout(() => {
+                    finalPage.style.opacity = '1';
+                }, 100);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Story ❤️</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+    <style>
+        /* Previous styles remain... Adding new styles: */
+
+        .vinyl-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .vinyl-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 105, 180, 0.3);
+            animation: spin 10s linear infinite;
+        }
+
+        .ring-1 { width: 350px; height: 350px; animation-duration: 15s; }
+        .ring-2 { width: 380px; height: 380px; animation-duration: 20s; }
+        .ring-3 { width: 410px; height: 410px; animation-duration: 25s; }
+
+        .visualizer-container {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: rotate(90deg);
+        }
+
+        .bar {
+            width: 4px;
+            height: 100px;
+            background: var(--primary);
+            margin: 0 2px;
+            border-radius: 2px;
+            animation: bounce 0.5s ease infinite;
+            animation-delay: calc(var(--delay) * 100ms);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scaleY(0.5); }
+            50% { transform: scaleY(1); }
+        }
+
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            opacity: 0;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes float-particle {
+            0% { transform: translate(-50%, -50%) translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translate(-50%, -50%) translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        .handwritten {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.5s ease;
+        }
+
+        .handwritten.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .glow-border {
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            animation: border-glow 2s infinite;
+        }
+
+        @keyframes border-glow {
+            0%, 100% { border-color: rgba(255, 105, 180, 0.5); }
+            50% { border-color: rgba(255, 105, 180, 1); }
+        }
+
+        .rose-petal {
+            position: fixed;
+            pointer-events: none;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle at 30% 30%, #ff69b4, #ff1493);
+            border-radius: 50% 0 50% 50%;
+            opacity: 0;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* ... Previous styles continue */
+    </style>
+</head>
+<body>
+    <!-- Previous HTML structure remains... Adding new elements: -->
+    <div id="particles-js"></div>
+    <div class="vinyl-container">
+        <div class="vinyl-ring ring-1"></div>
+        <div class="vinyl-ring ring-2"></div>
+        <div class="vinyl-ring ring-3"></div>
+        <div class="visualizer-container">
+            <!-- Bars added dynamically -->
+        </div>
+        <!-- ... Previous vinyl element -->
+    </div>
+
+    <!-- ... Rest of the previous HTML structure -->
+
+    <script>
+        // Previous script remains... Adding new functionality:
+
+        // Initialize particles.js
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80 },
+                color: { value: '#ff69b4' },
+                shape: { type: 'heart' },
+                opacity: { value: 0.5 },
+                size: { value: 3 },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: 'none',
+                    random: true,
+                    out_mode: 'out'
+                }
+            }
+        });
+
+        // Music visualizer
+        const visualizerContainer = document.querySelector('.visualizer-container');
+        for(let i = 0; i < 30; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            bar.style.setProperty('--delay', i);
+            visualizerContainer.appendChild(bar);
+        }
+
+        // Create rose petals
+        function createRosePetals() {
+            const petal = document.createElement('div');
+            petal.className = 'rose-petal';
+            petal.style.left = Math.random() * window.innerWidth + 'px';
+            petal.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+            document.body.appendChild(petal);
+            setTimeout(() => petal.remove(), 5000);
+        }
+
+        // Handwriting animation
+        function animateText(element) {
+            element.classList.add('handwritten');
+            setTimeout(() => element.classList.add('visible'), 100);
+        }
+
+        // Interactive particles on click
+        document.addEventListener('click', (e) => {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.innerHTML = '❤️';
+            particle.style.left = e.pageX + 'px';
+            particle.style.top = e.pageY + 'px';
+            particle.style.animation = 'float-particle 1s ease-out forwards';
+            document.body.appendChild(particle);
+            setTimeout(() => particle.remove(), 1000);
+        });
+
+        // 3D tilt effect
+        VanillaTilt.init(document.querySelectorAll('.choice-btn'), {
+            max: 25,
+            speed: 400,
+            glare: true,
+            'max-glare': 0.5
+        });
+
+        // Sound effects
+        const clickSound = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_2dde668d05.mp3');
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => clickSound.play());
+        });
+
+        // Rose petal animation for success page
+        let petalInterval;
+        const startPetals = () => {
+            petalInterval = setInterval(createRosePetals, 300);
+        };
+
+        const stopPetals = () => {
+            clearInterval(petalInterval);
+        };
+
+        // Modify success page transition to include petals
+        document.querySelector('.yes-btn').addEventListener('click', () => {
+            startPetals();
+            // ... previous success transition code
+        });
+
+        // Save progress
+        const saveProgress = (stage) => {
+            localStorage.setItem('loveProgress', stage);
+        };
+
+        const loadProgress = () => {
+            return localStorage.getItem('loveProgress');
+        };
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                // Reset to initial state
+                location.reload();
+            }
+        });
+
+        // ... Rest of the previous script
+    </script>
+</body>
+</html>
